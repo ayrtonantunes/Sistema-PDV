@@ -1,7 +1,12 @@
 const { Router } = require('express')
-const helloWord = require('./controladores/helloword')
 const rotas = Router()
 
-rotas.get('/', helloWord)
+const { cadastrarUsuario } = require('./controladores/usuario')
+const {
+  validarCorpo,
+  verificarEmailInformado,
+} = require('./intermediarios/usuario')
+
+rotas.post('/usuario', validarCorpo, verificarEmailInformado, cadastrarUsuario)
 
 module.exports = rotas
