@@ -1,5 +1,9 @@
 const joi = require('joi')
 const { buscarEmailUsuario } = require('../repositorios/consultas')
+//const { default: knex } = require('knex')
+const { conexaoBanco } = require('../conexao')
+const jwt = require('jsonwebtoken')
+const { senhaJwt } = require('../dadosSensiveis')
 
 const validarCorpo = async (req, res, next) => {
   const { nome, email, senha } = req.body
@@ -49,7 +53,33 @@ const verificarEmailInformado = async (req, res, next) => {
   }
 }
 
+const verificarUsuarioLogado = async (req, res, next) => {
+  const { authorization } = req.headers
+  
+  if (!authorization) {
+      return res.status(401).json({ mensagem: 'Para acessar este recurso um token de autenticação válido deve ser enviado.' })
+  }
+
+  const token = authorization.split(' ')[1]
+
+  try {
+      const { id } = jwt.verify(token, senhaJwt)
+    
+      const usuario = await conexaoBanco('usuarios').where({ id })
+       
+      if (usuario.length < 1) {
+          return res.status(404).json({ mensagem: 'O usuário não foi encontrado.' })
+      }
+      
+      next()
+  } catch (error) {
+      
+      return res.status(401).json({ mensagem: 'Para acessar este recurso um token de autenticação válido deve ser enviado.' })
+  }
+}
+
 module.exports = {
   validarCorpo,
   verificarEmailInformado,
+  verificarUsuarioLogado
 }
