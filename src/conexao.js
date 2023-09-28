@@ -4,9 +4,9 @@ const conexaoBanco = require('knex')({
     host: process.env.BD_HOST,
     port: process.env.BD_PORT,
     user: process.env.BD_USER,
-    password: `${process.env.BD_PASS}`,
+    password: process.env.BD_PASS,
     database: process.env.BD_NAME,
   },
 })
 
-module.exports = {conexaoBanco}
+module.exports = conexaoBanco

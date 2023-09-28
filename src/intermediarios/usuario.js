@@ -1,9 +1,8 @@
 const joi = require('joi')
-const { buscarEmailUsuario } = require('../repositorios/consultas')
-//const { default: knex } = require('knex')
-const { conexaoBanco } = require('../conexao')
+const { buscarEmailUsuario, buscarIdUsuario } = require('../repositorios/consultas')
 const jwt = require('jsonwebtoken')
-const { senhaJwt } = require('../dadosSensiveis')
+const bcrypt = require('bcrypt')
+
 
 const validarCorpo = async (req, res, next) => {
   const { nome, email, senha } = req.body
@@ -33,7 +32,7 @@ const validarCorpo = async (req, res, next) => {
 
     next()
   } catch (error) {
-    return res.json({ error: error.detail, mensagem: error.message })
+    return res.status(500).json({ error: error.detail, mensagem: error.message })
   }
 }
 
@@ -59,13 +58,13 @@ const verificarUsuarioLogado = async (req, res, next) => {
   if (!authorization) {
       return res.status(401).json({ mensagem: 'Para acessar este recurso um token de autenticação válido deve ser enviado.' })
   }
-
+  
   const token = authorization.split(' ')[1]
 
   try {
-      const { id } = jwt.verify(token, senhaJwt)
+      const { id } = jwt.verify(token, process.env.SENHA_JWT)
     
-      const usuario = await conexaoBanco('usuarios').where({ id })
+      const usuario = await buscarIdUsuario(id)
        
       if (usuario.length < 1) {
           return res.status(404).json({ mensagem: 'O usuário não foi encontrado.' })
@@ -78,8 +77,35 @@ const verificarUsuarioLogado = async (req, res, next) => {
   }
 }
 
+const validarCorpoLogin = async (req, res, next) => {
+  const { email, senha } = req.body
+
+  try {
+    const usuario = await buscarEmailUsuario(email)
+
+    if (!email || !senha) {
+        return res.status(400).json({ mensagem: 'Todos os campos são obrigatórios.'})
+    }
+
+    if (usuario.length < 1) {
+        return res.status(404).json({ mensagem: 'Usuário não encontrado.'})
+    }
+    
+    const senhaValida = await bcrypt.compare(senha, usuario[0].senha)
+
+    if (!senhaValida) {
+        return res.status(401).json({ mensagem: 'Email e/ou senha inválido(s).'})
+    }
+  } catch (error) {
+    return res.status(500).json({ error: error.detail, mensagem: error.message })
+  }
+
+  next()
+}
+
 module.exports = {
   validarCorpo,
   verificarEmailInformado,
-  verificarUsuarioLogado
+  verificarUsuarioLogado,
+  validarCorpoLogin
 }

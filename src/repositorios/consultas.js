@@ -1,7 +1,7 @@
 const conexaoBanco = require('../conexao')
 
 const buscarEmailUsuario = (email) => {
-  return conexaoBanco('usuarios').select('*').where({ email })
+  return conexaoBanco('usuarios').where({ email })
 }
 
 const adicionarUsuario = (usuario) => {
@@ -11,7 +11,12 @@ const adicionarUsuario = (usuario) => {
     .returning('*')
 }
 
+const buscarIdUsuario = (id) => {
+  return conexaoBanco('usuarios').where({ id })
+}
+
 module.exports = {
   buscarEmailUsuario,
   adicionarUsuario,
+  buscarIdUsuario
 }

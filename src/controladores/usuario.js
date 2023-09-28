@@ -1,9 +1,8 @@
 const { criptografarSenha } = require('../util/criptografia')
-const { adicionarUsuario } = require('../repositorios/consultas')
+const { adicionarUsuario, buscarEmailUsuario } = require('../repositorios/consultas')
 const jwt = require('jsonwebtoken')
-const { senhaJwt } = require('../dadosSensiveis')
-const { conexaoBanco } = require('../conexao')
-const bcrypt = require('bcrypt')
+const conexaoBanco = require('../conexao')
+
 
 const cadastrarUsuario = async (req, res) => {
   const { nome, email, senha } = req.body
@@ -23,27 +22,14 @@ const cadastrarUsuario = async (req, res) => {
 }
 
 const loginUsuario = async (req, res) => {
-  const { email, senha } = req.body
+  const { email } = req.body
 
   try {
-      const usuario = await conexaoBanco('usuarios').where({ email })
       
-      if (!email || !senha) {
-          return res.status(400).json({ mensagem: 'Todos os campos são obrigatórios.'})
-      }
+      const usuario = await buscarEmailUsuario(email)
 
-      if (usuario.length < 1) {
-          return res.status(404).json({ mensagem: 'Usuário e/ou senha inválido(s).'})
-      }
+      const token = jwt.sign({ id: usuario[0].id, }, process.env.SENHA_JWT, { expiresIn: '1h' })
       
-      const senhaValida = await bcrypt.compare(senha, usuario[0].senha)
-
-      if (!senhaValida) {
-          return res.status(401).json({ mensagem: 'Usuário e/ou senha inválido(s).'})
-      }
-
-      const token = jwt.sign({ id: usuario[0].id, }, senhaJwt, { expiresIn: '1h' })
-
       const { senha: _, ...usuarioLogado } = usuario[0]
 
       return res.status(200).json({ usuario: usuarioLogado, token })

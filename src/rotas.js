@@ -9,16 +9,13 @@ const {
 const {
   validarCorpo,
   verificarEmailInformado,
-  verificarUsuarioLogado
+  verificarUsuarioLogado,
+  validarCorpoLogin
 } = require('./intermediarios/usuario')
 
 rotas.post('/usuario', validarCorpo, verificarEmailInformado, cadastrarUsuario)
-rotas.post('/login', loginUsuario)
+rotas.post('/login', validarCorpoLogin, loginUsuario)
 
 rotas.use(verificarUsuarioLogado)
-
-rotas.get('/teste', (req, res) => {
-  return res.status(200).json('tudo certo')
-})
 
 module.exports = rotas
