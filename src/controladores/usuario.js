@@ -2,6 +2,7 @@ const { criptografarSenha } = require('../util/criptografia')
 const {
   adicionarUsuario,
   buscarEmailUsuario,
+  usuarioAtualizado,
 } = require('../repositorios/consultas')
 const jwt = require('jsonwebtoken')
 
@@ -26,14 +27,29 @@ const loginUsuario = async (req, res) => {
 
   try {
     const usuario = await buscarEmailUsuario(email)
-
     const token = jwt.sign({ id: usuario[0].id }, process.env.SENHA_JWT, {
       expiresIn: '1h',
     })
 
-    const { senha: _, ...usuarioLogado } = usuario[0]
+    delete usuario[0].senha
 
-    return res.status(200).json({ usuario: usuarioLogado, token })
+    return res.status(200).json({ usuario, token })
+  } catch (error) {
+    console.log({ error: error.detail, mensagem: error.message })
+    return res.status(500).json({ mensagem: 'Erro interno do Servidor' })
+  }
+}
+
+const atualizarUsuario = async (req, res) => {
+  const { id } = req.usuario
+  const { nome, email, senha } = req.body
+
+  try {
+    const senhaCriptografada = await criptografarSenha(senha)
+    const dadosAtualizados = { id, nome, email, senhaCriptografada }
+    const usuario = await usuarioAtualizado(dadosAtualizados)
+
+    return res.status(204).json(usuario)
   } catch (error) {
     console.log({ error: error.detail, mensagem: error.message })
     return res.status(500).json({ mensagem: 'Erro interno do Servidor' })
@@ -43,4 +59,5 @@ const loginUsuario = async (req, res) => {
 module.exports = {
   cadastrarUsuario,
   loginUsuario,
+  atualizarUsuario,
 }

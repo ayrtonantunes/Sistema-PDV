@@ -8,8 +8,8 @@ const buscarEmailUsuario = (email) => {
 const adicionarUsuario = (usuario) => {
   const { nome, email, senhaCriptografada } = usuario
   const novoUsuario = conexaoBanco('usuarios')
-  .insert({ nome, email, senha: senhaCriptografada })
-  .returning('*')
+    .insert({ nome, email, senha: senhaCriptografada })
+    .returning('*')
   return novoUsuario
 }
 
@@ -18,8 +18,11 @@ const buscarIdUsuario = (id) => {
   return idUsuario
 }
 
-const usuarioAtualizado = (nome, email, senha, id) => {
-  const usuario = conexaoBanco('usuarios').where({ id }).update({ nome, email, senha })
+const usuarioAtualizado = (dadosAtualizados) => {
+  const {id, nome, email, senhaCriptografada} = dadosAtualizados
+  const usuario = conexaoBanco('usuarios')
+    .where({ id })
+    .update({ nome, email, senha: senhaCriptografada })
   return usuario
 }
 
@@ -27,5 +30,5 @@ module.exports = {
   buscarEmailUsuario,
   adicionarUsuario,
   buscarIdUsuario,
-  usuarioAtualizado
+  usuarioAtualizado,
 }

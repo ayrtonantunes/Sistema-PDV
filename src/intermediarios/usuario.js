@@ -11,6 +11,17 @@ const validarCorpo = async (req, res, next) => {
 
   try {
     await schemaUsuario.validateAsync({ nome, email, senha })
+
+    next()
+  } catch (error) {
+    console.log({ error: error.detail, mensagem: error.message })
+    return res.status(500).json({ mensagem: 'Erro interno do Servidor' })
+  }
+}
+
+const verificarEmail = async (req, res, next) => {
+  const { email } = req.body
+  try {
     const emailCadastrado = await buscarEmailUsuario(email)
 
     if (emailCadastrado.length === 1) {
@@ -35,19 +46,19 @@ const verificarUsuarioLogado = async (req, res, next) => {
   }
 
   try {
-      const { id } = jwt.verify(token, process.env.SENHA_JWT)
-    
-      const usuario = await buscarIdUsuario(id)
-       
-      if (usuario.length < 1) {
-          return res.status(404).json({ mensagem: 'O usuário não foi encontrado.' })
-      }
+    const token = authorization.split(' ')[1]
+    const { id } = jwt.verify(token, process.env.SENHA_JWT)
+    const usuario = await buscarIdUsuario(id)
 
-      delete usuario[0].senha
-      
-      req.usuario = usuario[0]
+    if (usuario.length < 1) {
+      return res.status(404).json({ mensagem: 'O usuário não foi encontrado.' })
+    }
 
-      next()
+    delete usuario[0].senha
+
+    req.usuario = usuario[0]
+
+    next()
   } catch (error) {
     console.log({ error: error.detail, mensagem: error.message })
     if (error.name === 'TokenExpiredError') {
@@ -96,6 +107,7 @@ const validarCorpoLogin = async (req, res, next) => {
 
 module.exports = {
   validarCorpo,
+  verificarEmail,
   verificarUsuarioLogado,
   validarCorpoLogin,
 }

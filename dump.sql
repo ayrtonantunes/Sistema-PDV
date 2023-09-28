@@ -21,4 +21,4 @@ VALUES
   ('Brinquedos'),
   ('Moda'),
   ('Bebê'),
-  ('Games');
+  ('Games'); 
