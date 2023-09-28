@@ -3,7 +3,6 @@ const { buscarEmailUsuario, buscarIdUsuario } = require('../repositorios/consult
 const jwt = require('jsonwebtoken')
 const bcrypt = require('bcrypt')
 
-
 const validarCorpo = async (req, res, next) => {
   const { nome, email, senha } = req.body
 
@@ -96,11 +95,10 @@ const validarCorpoLogin = async (req, res, next) => {
     if (!senhaValida) {
         return res.status(401).json({ mensagem: 'Email e/ou senha inválido(s).'})
     }
+    next()
   } catch (error) {
     return res.status(500).json({ error: error.detail, mensagem: error.message })
   }
-
-  next()
 }
 
 module.exports = {
