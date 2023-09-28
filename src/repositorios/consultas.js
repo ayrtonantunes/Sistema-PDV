@@ -15,8 +15,14 @@ const buscarIdUsuario = (id) => {
   return conexaoBanco('usuarios').where({ id })
 }
 
+const usuarioAtualizado = (nome, email, senha, id) => {
+  const usuario = conexaoBanco('usuarios').where({ id }).update({ nome, email, senha })
+  return usuario
+}
+
 module.exports = {
   buscarEmailUsuario,
   adicionarUsuario,
-  buscarIdUsuario
+  buscarIdUsuario,
+  usuarioAtualizado
 }

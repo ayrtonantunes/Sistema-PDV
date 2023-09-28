@@ -29,7 +29,6 @@ const validarCorpo = async (req, res, next) => {
     })
 
     await schemaUsuario.validateAsync({ nome, email, senha })
-
     next()
   } catch (error) {
     return res.status(500).json({ error: error.detail, mensagem: error.message })
@@ -69,7 +68,11 @@ const verificarUsuarioLogado = async (req, res, next) => {
       if (usuario.length < 1) {
           return res.status(404).json({ mensagem: 'O usuário não foi encontrado.' })
       }
+
+      delete usuario[0].senha
       
+      req.usuario = usuario[0]
+
       next()
   } catch (error) {
       

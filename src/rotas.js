@@ -3,7 +3,8 @@ const rotas = Router()
 
 const { 
   cadastrarUsuario, 
-  loginUsuario 
+  loginUsuario,
+  atualizarUsuario,
 } = require('./controladores/usuario')
 
 const {
@@ -17,5 +18,7 @@ rotas.post('/usuario', validarCorpo, verificarEmailInformado, cadastrarUsuario)
 rotas.post('/login', validarCorpoLogin, loginUsuario)
 
 rotas.use(verificarUsuarioLogado)
+
+rotas.put('/usuario', validarCorpo, atualizarUsuario)
 
 module.exports = rotas
