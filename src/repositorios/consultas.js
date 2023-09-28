@@ -18,5 +18,5 @@ const buscarIdUsuario = (id) => {
 module.exports = {
   buscarEmailUsuario,
   adicionarUsuario,
-  buscarIdUsuario
+  buscarIdUsuario,
 }
