@@ -1,18 +1,21 @@
 const conexaoBanco = require('../conexao')
 
 const buscarEmailUsuario = (email) => {
-  return conexaoBanco('usuarios').where({ email })
+  const dadosUsuario = conexaoBanco('usuarios').where({ email })
+  return dadosUsuario
 }
 
 const adicionarUsuario = (usuario) => {
   const { nome, email, senhaCriptografada } = usuario
-  return conexaoBanco('usuarios')
-    .insert({ nome, email, senha: senhaCriptografada })
-    .returning('*')
+  const novoUsuario = conexaoBanco('usuarios')
+  .insert({ nome, email, senha: senhaCriptografada })
+  .returning('*')
+  return novoUsuario
 }
 
 const buscarIdUsuario = (id) => {
-  return conexaoBanco('usuarios').where({ id })
+  const idUsuario = conexaoBanco('usuarios').where({ id })
+  return idUsuario
 }
 
 module.exports = {
