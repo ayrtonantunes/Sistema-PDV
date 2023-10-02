@@ -5,8 +5,7 @@ const {
   usuarioAtualizado,
   buscarIdUsuario,
 } = require('../repositorios/consultas')
-// const { gerarToken } = require('../util/jwt')
-const jwt = require('jsonwebtoken')
+const { gerarToken } = require('../util/jwt')
 
 const cadastrarUsuario = async (req, res) => {
   const { nome, email, senha } = req.body
@@ -28,9 +27,7 @@ const loginUsuario = async (req, res) => {
 
   try {
     const usuario = await buscarEmailUsuario(email)
-    const token = jwt.sign({ id: usuario[0].id }, process.env.SENHA_JWT, {
-      expiresIn: '8h',
-    })
+    const token = gerarToken({ id: usuario[0].id }, '1h')
     delete usuario[0].senha
 
     return res.status(200).json({ usuario, token })
