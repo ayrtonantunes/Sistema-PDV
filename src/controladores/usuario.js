@@ -18,7 +18,6 @@ const cadastrarUsuario = async (req, res) => {
 
     return res.status(201).json(usuarioCadastrado)
   } catch (error) {
-    console.log({ error: error.detail, mensagem: error.message })
     return res.status(500).json({ mensagem: 'Erro interno do Servidor' })
   }
 }
@@ -28,14 +27,14 @@ const loginUsuario = async (req, res) => {
 
   try {
     const usuario = await buscarEmailUsuario(email)
-    const token = gerarToken({ id: usuario[0].id }, '1h')
-
+    const dados = { id: usuario[0].id }
+    const {token, secret} = gerarToken(dados, '1h')
     delete usuario[0].senha
 
-    return res.status(200).json({ usuario, token })
+    return res.status(200).json({ usuario, token, secret })
   } catch (error) {
-    console.log({ error: error.detail, mensagem: error.message })
     return res.status(500).json({ mensagem: error.message })
+    // return res.status(500).json({ mensagem: 'Erro interno do Servidor' })
   }
 }
 
@@ -50,8 +49,8 @@ const atualizarUsuario = async (req, res) => {
 
     return res.status(204).json(usuario)
   } catch (error) {
-    console.log({ error: error.detail, mensagem: error.message })
-    return res.status(500).json({ mensagem: 'Erro interno do Servidor' })
+    return res.status(500).json({ mensagem: error.message })
+    // return res.status(500).json({ mensagem: 'Erro interno do Servidor' })
   }
 }
 
@@ -64,8 +63,8 @@ const detalharUsuario = async (req, res) => {
 
     return res.status(200).json(usuario)
   } catch (error) {
-    console.log({ error: error.detail, mensagem: error.message })
-    return res.status(500).json({ mensagem: 'Erro interno do Servidor' })
+    return res.status(500).json({ mensagem: error.message })
+    // return res.status(500).json({ mensagem: 'Erro interno do Servidor' })
   }
 }
 
