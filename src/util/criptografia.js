@@ -5,4 +5,9 @@ const criptografarSenha = (senha) => {
   return senhaCriptografada
 }
 
-module.exports = { criptografarSenha }
+const compararSenha = (senha, hash) => {
+  const senhaComparada = bcrypt.compare(senha, hash)
+  return senhaComparada
+}
+
+module.exports = { criptografarSenha, compararSenha }

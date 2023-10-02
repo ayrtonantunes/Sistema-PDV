@@ -2,43 +2,59 @@ const {
   buscarEmailUsuario,
   buscarIdUsuario,
 } = require('../repositorios/consultas')
-const jwt = require('jsonwebtoken')
 const bcrypt = require('bcrypt')
-const schemaUsuario = require('../esquema/usuario')
+const esquemaUsuario = require('../esquema/usuario')
+const { verificarToken } = require('../util/jwt')
 
 const validarCorpo = async (req, res, next) => {
   const { nome, email, senha } = req.body
 
   try {
-    await schemaUsuario.validateAsync({ nome, email, senha })
+    await esquemaUsuario.validateAsync({ nome, email, senha })
 
     next()
   } catch (error) {
     console.log({ error: error.detail, mensagem: error.message })
-    return res.status(500).json({ mensagem: 'Erro interno do Servidor' })
+    return res.status(500).json({
+      mensagem: error.message,
+    })
   }
 }
 
 const verificarEmail = async (req, res, next) => {
+  const usuarioLogado = req.usuarioAutenticado
   const { email } = req.body
+
   try {
-    const emailCadastrado = await buscarEmailUsuario(email)
+    const emailEncontrado = await buscarEmailUsuario(email)
 
-    if (emailCadastrado.length === 1) {
-      return res.status(409).json({ mensagem: 'Usuário ou email já existe.' })
+    if (
+      emailEncontrado.length === 0 ||
+      emailEncontrado[0].id === usuarioLogado
+    ) {
+      next()
+    } else if (emailEncontrado.length === 1) {
+      if (usuarioLogado === undefined) {
+        return res.status(409).json({
+          mensagem: 'Usuário ou Email já existe',
+        })
+      }
+
+      return res.status(409).json({
+        mensagem:
+          'O e-mail informado já está sendo utilizado por outro usuário.',
+      })
     }
-
-    next()
   } catch (error) {
     console.log({ error: error.detail, mensagem: error.message })
     return res.status(500).json({ mensagem: 'Erro interno do Servidor' })
   }
 }
 
-const verificarUsuarioLogado = async (req, res, next) => {
+const validarToken = async (req, res, next) => {
   const { authorization } = req.headers
 
-  if (!authorization) {
+  if (!authorization || !authorization.startsWith('Bearer ')) {
     return res.status(401).json({
       mensagem:
         'Para acessar este recurso um token de autenticação válido deve ser enviado.',
@@ -47,16 +63,14 @@ const verificarUsuarioLogado = async (req, res, next) => {
 
   try {
     const token = authorization.split(' ')[1]
-    const { id } = jwt.verify(token, process.env.SENHA_JWT)
+    const { id } = verificarToken(token)
     const usuario = await buscarIdUsuario(id)
 
-    if (usuario.length < 1) {
+    if (usuario.length === 1) {
       return res.status(404).json({ mensagem: 'O usuário não foi encontrado.' })
     }
 
-    delete usuario[0].senha
-
-    req.usuario = usuario[0]
+    req.usuarioAutenticado = usuario.id
 
     next()
   } catch (error) {
@@ -81,23 +95,23 @@ const validarCorpoLogin = async (req, res, next) => {
   const { email, senha } = req.body
 
   try {
-    const usuario = await buscarEmailUsuario(email)
-
     if (!email || !senha) {
       return res
-        .status(400)
+        .status(422)
         .json({ mensagem: 'Todos os campos são obrigatórios.' })
     }
 
-    if (usuario.length < 1) {
+    const usuario = await buscarEmailUsuario(email)
+
+    if (usuario.length === 0) {
       return res.status(404).json({ mensagem: 'Usuário não encontrado.' })
     }
-
     const senhaValida = await bcrypt.compare(senha, usuario[0].senha)
 
     if (!senhaValida) {
       return res.status(401).json({ mensagem: 'Email e/ou senha inválido(s).' })
     }
+
     next()
   } catch (error) {
     console.log({ error: error.detail, mensagem: error.message })
@@ -108,6 +122,6 @@ const validarCorpoLogin = async (req, res, next) => {
 module.exports = {
   validarCorpo,
   verificarEmail,
-  verificarUsuarioLogado,
+  validarToken,
   validarCorpoLogin,
 }

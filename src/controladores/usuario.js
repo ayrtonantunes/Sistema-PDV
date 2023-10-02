@@ -3,8 +3,9 @@ const {
   adicionarUsuario,
   buscarEmailUsuario,
   usuarioAtualizado,
+  buscarIdUsuario,
 } = require('../repositorios/consultas')
-const jwt = require('jsonwebtoken')
+const { gerarToken } = require('../util/jwt')
 
 const cadastrarUsuario = async (req, res) => {
   const { nome, email, senha } = req.body
@@ -15,7 +16,7 @@ const cadastrarUsuario = async (req, res) => {
     const usuarioCadastrado = await adicionarUsuario(usuario)
     delete usuarioCadastrado[0].senha
 
-    return res.status(201).json(usuarioCadastrado[0])
+    return res.status(201).json(usuarioCadastrado)
   } catch (error) {
     console.log({ error: error.detail, mensagem: error.message })
     return res.status(500).json({ mensagem: 'Erro interno do Servidor' })
@@ -27,9 +28,7 @@ const loginUsuario = async (req, res) => {
 
   try {
     const usuario = await buscarEmailUsuario(email)
-    const token = jwt.sign({ id: usuario[0].id }, process.env.SENHA_JWT, {
-      expiresIn: '1h',
-    })
+    const token = gerarToken({ id: usuario[0].id }, '1h')
 
     delete usuario[0].senha
 
@@ -41,7 +40,7 @@ const loginUsuario = async (req, res) => {
 }
 
 const atualizarUsuario = async (req, res) => {
-  const { id } = req.usuario
+  const id = req.usuarioAutenticado
   const { nome, email, senha } = req.body
 
   try {
@@ -56,8 +55,23 @@ const atualizarUsuario = async (req, res) => {
   }
 }
 
+const detalharUsuario = async (req, res) => {
+  const id = req.usuarioAutenticado
+
+  try {
+    const usuario = await buscarIdUsuario(id)
+    delete usuario.senha
+
+    return res.status(200).json(usuario)
+  } catch (error) {
+    console.log({ error: error.detail, mensagem: error.message })
+    return res.status(500).json({ mensagem: 'Erro interno do Servidor' })
+  }
+}
+
 module.exports = {
   cadastrarUsuario,
   loginUsuario,
   atualizarUsuario,
+  detalharUsuario,
 }

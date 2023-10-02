@@ -14,16 +14,21 @@ const adicionarUsuario = (usuario) => {
 }
 
 const buscarIdUsuario = (id) => {
-  const idUsuario = conexaoBanco('usuarios').where({ id })
+  const idUsuario = conexaoBanco('usuarios').where({ id }).first()
   return idUsuario
 }
 
 const usuarioAtualizado = (dadosAtualizados) => {
-  const {id, nome, email, senhaCriptografada} = dadosAtualizados
+  const { id, nome, email, senhaCriptografada } = dadosAtualizados
   const usuario = conexaoBanco('usuarios')
     .where({ id })
     .update({ nome, email, senha: senhaCriptografada })
   return usuario
+}
+
+const listarCategorias = () => {
+  const categorias = conexaoBanco('categorias')
+  return categorias
 }
 
 module.exports = {
@@ -31,4 +36,5 @@ module.exports = {
   adicionarUsuario,
   buscarIdUsuario,
   usuarioAtualizado,
+  listarCategorias,
 }
