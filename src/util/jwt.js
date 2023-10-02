@@ -2,8 +2,7 @@ const jwt = require('jsonwebtoken')
 
 function gerarToken(dados, tempo) {
   const token = jwt.sign(dados, process.env.SENHA_JWT, { expiresIn: tempo })
-  const secret = process.env.SENHA_JWT
-  return {token, secret}
+  return token
 }
 
 function verificarToken(token) {

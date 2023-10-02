@@ -5,7 +5,8 @@ const {
   usuarioAtualizado,
   buscarIdUsuario,
 } = require('../repositorios/consultas')
-const { gerarToken } = require('../util/jwt')
+// const { gerarToken } = require('../util/jwt')
+const jwt = require('jsonwebtoken')
 
 const cadastrarUsuario = async (req, res) => {
   const { nome, email, senha } = req.body
@@ -27,11 +28,12 @@ const loginUsuario = async (req, res) => {
 
   try {
     const usuario = await buscarEmailUsuario(email)
-    const dados = { id: usuario[0].id }
-    const {token, secret} = gerarToken(dados, '1h')
+    const token = jwt.sign({ id: usuario[0].id }, process.env.SENHA_JWT, {
+      expiresIn: '8h',
+    })
     delete usuario[0].senha
 
-    return res.status(200).json({ usuario, token, secret })
+    return res.status(200).json({ usuario, token })
   } catch (error) {
     return res.status(500).json({ mensagem: error.message })
     // return res.status(500).json({ mensagem: 'Erro interno do Servidor' })
