@@ -1,7 +1,7 @@
 const conexaoBanco = require('../conexao')
 
 const buscarEmailUsuario = (email) => {
-  const dadosUsuario = conexaoBanco('usuarios').where({ email })
+  const dadosUsuario = conexaoBanco('usuarios').where({ email }).first()
   return dadosUsuario
 }
 
@@ -14,16 +14,16 @@ const adicionarUsuario = (usuario) => {
 }
 
 const buscarIdUsuario = (id) => {
-  const idUsuario = conexaoBanco('usuarios').where({ id }).first()
-  return idUsuario
+  const dadosUsuario = conexaoBanco('usuarios').where({ id }).first()
+  return dadosUsuario
 }
 
 const usuarioAtualizado = (dadosAtualizados) => {
   const { id, nome, email, senhaCriptografada } = dadosAtualizados
-  const usuario = conexaoBanco('usuarios')
+  const resultado = conexaoBanco('usuarios')
     .where({ id })
     .update({ nome, email, senha: senhaCriptografada })
-  return usuario
+  return resultado
 }
 
 const listarCategorias = () => {

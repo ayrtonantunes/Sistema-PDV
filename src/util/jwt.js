@@ -1,16 +1,11 @@
 const jwt = require('jsonwebtoken')
 
 function gerarToken(dados, tempo) {
-  const token = jwt.sign(dados, process.env.SENHA_JWT, { expiresIn: tempo })
-  return token
+  return jwt.sign(dados, process.env.SENHA_JWT, { expiresIn: tempo })
 }
 
 function verificarToken(token) {
-  try {
-    return jwt.verify(token, process.env.SENHA_JWT)
-  } catch (err) {
-    return null
-  }
+  return jwt.verify(token, process.env.SENHA_JWT)
 }
 
 module.exports = {

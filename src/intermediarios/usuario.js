@@ -2,39 +2,33 @@ const {
   buscarEmailUsuario,
   buscarIdUsuario,
 } = require('../repositorios/consultas')
-const bcrypt = require('bcrypt')
 const esquemaUsuario = require('../esquema/usuario')
 const { verificarToken } = require('../util/jwt')
+const { compararSenha } = require('../util/criptografia')
 
 const validarCorpo = async (req, res, next) => {
-  const { nome, email, senha } = req.body
+  const dadosUsuario = req.body
 
   try {
-    await esquemaUsuario.validateAsync({ nome, email, senha })
+    await esquemaUsuario.validateAsync(dadosUsuario)
 
     next()
   } catch (error) {
-    console.log({ error: error.detail, mensagem: error.message })
-    return res.status(500).json({
-      mensagem: error.message,
-    })
+    return res.status(500).json({ mensagem: error.message })
   }
 }
 
 const verificarEmail = async (req, res, next) => {
-  const usuarioLogado = req.usuarioAutenticado
+  const idUsuarioLogado = req.usuarioAutenticado
   const { email } = req.body
 
   try {
     const emailEncontrado = await buscarEmailUsuario(email)
 
-    if (
-      emailEncontrado.length === 0 ||
-      emailEncontrado[0].id === usuarioLogado
-    ) {
-      next()
-    } else if (emailEncontrado.length === 1) {
-      if (usuarioLogado === undefined) {
+    if (!emailEncontrado || emailEncontrado.id === idUsuarioLogado) {
+      return next()
+    } else if (emailEncontrado) {
+      if (idUsuarioLogado === undefined) {
         return res.status(409).json({
           mensagem: 'Usuário ou Email já existe',
         })
@@ -46,7 +40,6 @@ const verificarEmail = async (req, res, next) => {
       })
     }
   } catch (error) {
-    console.log({ error: error.detail, mensagem: error.message })
     return res.status(500).json({ mensagem: 'Erro interno do Servidor' })
   }
 }
@@ -66,7 +59,7 @@ const validarToken = async (req, res, next) => {
     const { id } = verificarToken(token)
     const usuario = await buscarIdUsuario(id)
 
-    if (usuario.length === 1) {
+    if (!usuario) {
       return res.status(404).json({ mensagem: 'O usuário não foi encontrado.' })
     }
 
@@ -74,7 +67,6 @@ const validarToken = async (req, res, next) => {
 
     next()
   } catch (error) {
-    console.log({ error: error.detail, mensagem: error.message })
     if (error.name === 'TokenExpiredError') {
       return res.status(401).json({
         message:
@@ -96,17 +88,17 @@ const validarCorpoLogin = async (req, res, next) => {
 
   try {
     if (!email || !senha) {
-      return res
-        .status(422)
-        .json({ mensagem: 'Todos os campos são obrigatórios.' })
+      return res.status(422).json({
+        mensagem: 'Todos os campos são obrigatórios.',
+      })
     }
 
     const usuario = await buscarEmailUsuario(email)
 
-    if (usuario.length === 0) {
+    if (!usuario) {
       return res.status(404).json({ mensagem: 'Usuário não encontrado.' })
     }
-    const senhaValida = await bcrypt.compare(senha, usuario[0].senha)
+    const senhaValida = await compararSenha(senha, usuario.senha)
 
     if (!senhaValida) {
       return res.status(401).json({ mensagem: 'Email e/ou senha inválido(s).' })
@@ -114,7 +106,6 @@ const validarCorpoLogin = async (req, res, next) => {
 
     next()
   } catch (error) {
-    console.log({ error: error.detail, mensagem: error.message })
     return res.status(500).json({ mensagem: 'Erro interno do Servidor' })
   }
 }

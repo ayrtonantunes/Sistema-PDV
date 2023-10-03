@@ -1,13 +1,11 @@
 const bcrypt = require('bcrypt')
 
 const criptografarSenha = (senha) => {
-  const senhaCriptografada = bcrypt.hash(senha, 10)
-  return senhaCriptografada
+  return bcrypt.hash(senha, 10)
 }
 
 const compararSenha = (senha, hash) => {
-  const senhaComparada = bcrypt.compare(senha, hash)
-  return senhaComparada
+  return bcrypt.compare(senha, hash)
 }
 
 module.exports = { criptografarSenha, compararSenha }
