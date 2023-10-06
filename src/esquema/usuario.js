@@ -17,4 +17,17 @@ const esquemaUsuario = joi.object({
   }),
 })
 
-module.exports = esquemaUsuario
+const esquemaLogin = joi.object({
+  email: joi.string().email().required().messages({
+    'string.empty': 'O campo email é obrigatório.',
+    'string.email': 'O campo email deve ser um endereço de email válido.',
+    'any.required': 'O campo email é obrigatório.',
+  }),
+  senha: joi.string().min(5).required().messages({
+    'string.empty': 'Email e/ou senha inválido(s).',
+    'string.min': 'Email e/ou senha inválido(s).',
+    'any.required': 'O campo senha é obrigatório.',
+  }),
+})
+
+module.exports = { esquemaUsuario, esquemaLogin }

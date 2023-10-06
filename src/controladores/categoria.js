@@ -1,8 +1,8 @@
-const { listarCategorias } = require('../repositorios/consultas')
+const { listarDados } = require('../repositorios/consulta')
 
 const listar = async (req, res) => {
   try {
-    const categorias = await listarCategorias()
+    const categorias = await listarDados('categorias')
     return res.status(200).json({ categorias })
   } catch (error) {
     return res.status(500).json({ mensagem: 'Erro interno do Servidor' })
