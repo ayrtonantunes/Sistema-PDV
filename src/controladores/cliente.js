@@ -70,7 +70,7 @@ const editarCliente = async (req, res) => {
     const cpf = novosDados.cpf
     const cpfEncontrado = await buscarDados('clientes', { cpf })
 
-    if (cpfEncontrado && emailEncontrado?.id !== id) {
+    if (cpfEncontrado && cpfEncontrado?.id !== id) {
       return res.status(409).json({
         mensagem: 'O cpf informado já está sendo utilizado por outro usuário.',
       })
