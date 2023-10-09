@@ -9,4 +9,4 @@ const listar = async (req, res) => {
   }
 }
 
-module.exports = { listar }
+module.exports = listar

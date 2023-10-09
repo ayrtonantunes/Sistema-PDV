@@ -72,7 +72,7 @@ const editarUsuario = async (req, res) => {
   try {
     const emailEncontrado = await buscarDados('usuarios', { email })
 
-    if (emailEncontrado && emailEncontrado.id !== id) {
+    if (emailEncontrado && emailEncontrado?.id !== id) {
       return res.status(409).json({
         mensagem:
           'O e-mail informado já está sendo utilizado por outro usuário.',

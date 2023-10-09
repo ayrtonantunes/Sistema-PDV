@@ -16,20 +16,19 @@ const listarProdutos = async (req, res) => {
 }
 
 const cadastrarProduto = async (req, res) => {
-  const { descricao, quantidade_estoque, valor, categoria_id } = req.body
+  const produto = req.body
 
   try {
     const categoriaEncontrada = await buscarDados('categorias', {
-      id: categoria_id,
+      id: produto.categoria_id,
     })
 
     if (!categoriaEncontrada) {
-      return res
-        .status(404)
-        .json({ mensagem: 'A categoria informada não existe.' })
+      return res.status(404).json({
+        mensagem: 'A categoria informada não existe.',
+      })
     }
 
-    const produto = { descricao, quantidade_estoque, valor, categoria_id }
     const [produtoCadastrado] = await adicionarDados('produtos', produto)
 
     return res.status(201).json(produtoCadastrado)
@@ -54,9 +53,7 @@ const editarProduto = async (req, res) => {
     })
 
     if (!categoriaEncontrada) {
-      return res
-        .status(404)
-        .json({ mensagem: 'A categoria informada não existe.' })
+      return res.status(404).json({ mensagem: 'Categoria não encontrado.' })
     }
 
     const propriedades = {
@@ -99,8 +96,9 @@ const excluirProduto = async (req, res) => {
       })
     }
 
-    const produtoExcluido = await excluirDados('produtos', { id })
-    return res.status(204).json(produtoExcluido)
+    await excluirDados('produtos', { id })
+
+    return res.status(204).json()
   } catch (error) {
     return res.status(500).json({ mensagem: 'Erro interno do Servidor' })
   }
