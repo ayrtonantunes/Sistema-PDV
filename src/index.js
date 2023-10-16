@@ -4,6 +4,7 @@ const rotasCategoria = require('./rotas/categoria')
 const rotasUsuario = require('./rotas/usuario')
 const rotasCliente = require('./rotas/cliente')
 const rotasProduto = require('./rotas/produto')
+const rotasPedido = require('./rotas/pedido')
 const cors = require('cors')
 
 const app = express()
@@ -16,6 +17,7 @@ app.use(rotasCategoria)
 app.use(rotasUsuario)
 app.use(rotasCliente)
 app.use(rotasProduto)
+app.use(rotasPedido)
 
 app.listen(PORTA, () => {
   console.log(`Servidor rodando em http://localhost:${PORTA}`)

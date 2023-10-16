@@ -76,13 +76,13 @@ const editarCliente = async (req, res) => {
       })
     }
 
-    const propriedades = {
+    const dadosAtualizados = {
       tabela: 'clientes',
       campo: { id },
       dados: novosDados,
     }
 
-    await editarDados(propriedades)
+    await editarDados(dadosAtualizados)
 
     return res.status(204).json()
   } catch (error) {

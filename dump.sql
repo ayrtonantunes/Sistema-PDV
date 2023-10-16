@@ -56,7 +56,7 @@ CREATE TABLE pedido_produtos (
   pedido_id SMALLINT NOT NULL REFERENCES pedidos(id),
   produto_id SMALLINT NOT NULL REFERENCES produtos(id),
   quantidade_produto SMALLINT NOT NULL,
-  valor_produto INTEGER NOT NULL,
+  valor_produto INTEGER NOT NULL
 );
 
 ALTER TABLE produtos 

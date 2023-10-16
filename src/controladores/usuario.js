@@ -1,5 +1,5 @@
-const { criptografarSenha, compararSenha } = require('../util/criptografia')
-const { gerarToken } = require('../util/jwt')
+const { criptografarSenha, compararSenha } = require('../utils/criptografia')
+const { gerarToken } = require('../utils/jwt')
 const {
   buscarDados,
   adicionarDados,
@@ -43,7 +43,7 @@ const loginUsuario = async (req, res) => {
       return res.status(401).json({ mensagem: 'Email e/ou senha inválido(s).' })
     }
 
-    const token = gerarToken({ id: usuario.id }, '1h')
+    const token = gerarToken({ id: usuario.id }, '8h')
     delete usuario.senha
 
     return res.status(200).json({ usuario, token })
