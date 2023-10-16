@@ -3,10 +3,12 @@ const Joi = require('joi')
 const esquemaCliente = Joi.object({
   nome: Joi.string().required().messages({
     'string.empty': 'O campo nome é obrigatório.',
+    'string.base': 'O campo nome é obrigatório.',
     'any.required': 'O campo nome é obrigatório.',
   }),
   email: Joi.string().email().required().messages({
     'string.empty': 'O campo email é obrigatório.',
+    'string.base': 'O campo email é obrigatório.',
     'string.email': 'O campo email deve ser um endereço de email válido.',
     'any.required': 'O campo email é obrigatório.',
   }),
