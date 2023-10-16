@@ -42,7 +42,7 @@ const enviarEmail = async (dados) => {
 
   transportador.sendMail({
     from: `${process.env.EMAIL_NAME} <${process.env.EMAIL_FROM}>`,
-    to: `${cliente.nome} <${'victorparizio@hotmail.com'}>`,
+    to: `${cliente.nome} <${cliente.email}>`,
     subject: 'Compra Realizada com Sucesso!',
     html,
   })
