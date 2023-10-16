@@ -1,5 +1,5 @@
 const { buscarDados } = require('../repositorios/consulta')
-const { verificarToken } = require('../util/jwt')
+const { verificarToken } = require('../utils/jwt')
 
 const validarToken = async (req, res, next) => {
   const { authorization } = req.headers

@@ -43,3 +43,21 @@ CREATE TABLE clientes (
   cidade VARCHAR(150) DEFAULT NULL,
   estado VARCHAR(2) DEFAULT NULL
 );
+
+CREATE TABLE pedidos (
+  id SERIAL PRIMARY KEY,
+  cliente_id SMALLINT NOT NULL REFERENCES clientes(id),
+  observacao VARCHAR(150),
+  valor_total INTEGER NOT NULL
+);
+
+CREATE TABLE pedido_produtos (
+  id SERIAL PRIMARY KEY,
+  pedido_id SMALLINT NOT NULL REFERENCES pedidos(id),
+  produto_id SMALLINT NOT NULL REFERENCES produtos(id),
+  quantidade_produto SMALLINT NOT NULL,
+  valor_produto INTEGER NOT NULL
+);
+
+ALTER TABLE produtos 
+ADD produto_imagem VARCHAR(255);

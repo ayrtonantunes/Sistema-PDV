@@ -1,8 +1,13 @@
-const conexaoBanco = require('../conexao')
+const conexaoBanco = require('../config/conexao')
 
 const listarDados = (tabela) => {
-  const dadosListados = conexaoBanco(tabela)
+  const dadosListados = conexaoBanco(tabela).orderBy('id')
   return dadosListados
+}
+
+const filtrarDados = (tabela, campo) => {
+  const lista = conexaoBanco(tabela).where(campo)
+  return lista
 }
 
 const buscarDados = (tabela, campo) => {
@@ -28,6 +33,7 @@ const excluirDados = (tabela, campo) => {
 
 module.exports = {
   listarDados,
+  filtrarDados,
   buscarDados,
   adicionarDados,
   editarDados,

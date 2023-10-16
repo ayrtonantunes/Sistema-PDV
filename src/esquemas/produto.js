@@ -21,6 +21,10 @@ const esquemaProduto = joi.object({
     'number.base': 'O campo categoria_id deve ser um número.',
     'any.required': 'O campo categoria_id é obrigatório.',
   }),
+  produto_imagem: joi.number().messages({
+    'string.empty': 'O campo produto_imagem é obrigatório.',
+    'string.base': 'O campo produto_imagem é obrigatório.',
+  }),
 })
 
 module.exports = esquemaProduto

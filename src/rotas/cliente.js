@@ -8,11 +8,22 @@ const {
   detalharCliente,
 } = require('../controladores/cliente')
 const validarCorpo = require('../intermediarios/validarCorpo')
-const esquemaCliente = require('../esquema/cliente')
+const esquemaCliente = require('../esquemas/cliente')
+const validarCPF = require('../intermediarios/validarCPF')
 
 rota.get('/cliente', listarCliente)
-rota.post('/cliente', validarCorpo(esquemaCliente), cadastrarCliente)
-rota.put('/cliente/:id', validarCorpo(esquemaCliente), editarCliente)
+rota.post(
+  '/cliente',
+  validarCorpo(esquemaCliente),
+  validarCPF,
+  cadastrarCliente
+)
+rota.put(
+  '/cliente/:id',
+  validarCorpo(esquemaCliente),
+  validarCPF,
+  editarCliente
+)
 rota.get('/cliente/:id', detalharCliente)
 
 module.exports = rota

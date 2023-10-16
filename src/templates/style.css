@@ -1,0 +1,44 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  list-style: none;
+}
+
+body {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+
+  width: 100vw;
+  min-height: 100vh;
+  padding: 20px;
+}
+
+section,
+footer {
+  width: 80%;
+  margin-bottom: 20px;
+}
+
+p {
+  margin: 15px 0;
+}
+
+.pedido {
+  margin-top: 20px;
+}
+
+.pedido h4 {
+  margin: 20px 0 10px;
+}
+
+.pedido li {
+  display: inline;
+  white-space: nowrap;
+  margin-right: 20px;
+}
+
+footer {
+  text-align: center;
+}

@@ -1,0 +1,73 @@
+<!doctype html>
+<html lang="pt-br">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <link rel="stylesheet" href="style.css" />
+
+    <title>Compra Realizada com Sucesso!</title>
+  </head>
+  <body>
+    <section class="pedido">
+      <h2>Olá Professor</h2>
+      <p>É com grande alegria que anunciamos o sucesso da compra feita com a equipe "🐎EGH - Extreme Go Horse🐎".</p>
+      
+      <h3>Resumo do Pedido</h3>
+      
+      <h4>Detalhes do Cliente</h4>
+      <ul>
+        <li><strong>Usuário ID:</strong> {{cliente.id}}</li>
+        <li><strong>Nome:</strong> {{cliente.nome}}</li>
+        <li><strong>Email:</strong> {{cliente.email}}</li>
+        <li><strong>CPF:</strong> {{cliente.cpf}}</li>
+        <li><strong>CEP:</strong> {{cliente.cep}}</li>
+        <li><strong>Rua:</strong> {{cliente.rua}}</li>
+        <li><strong>Número:</strong> {{cliente.numero}}</li>
+        <li><strong>Bairro:</strong> {{cliente.bairro}}</li>
+        <li><strong>Cidade:</strong> {{cliente.cidade}}</li>
+        <li><strong>Estado:</strong> {{cliente.estado}}</li>
+      </ul>
+
+      <h4>Detalhes do Pedido</h4>
+      <table>
+        <thead>
+          <tr>
+            <th>ID do Pedido</th>
+            <th>ID do Produto</th>
+            <th>Unidade(s)</th>
+            <th>Preço (centavos)</th>
+          </tr>
+        </thead>
+        <tbody>
+          {{{produtosPedido}}}
+        </tbody>
+      </table>
+
+      <h4>Valor Total</h4>
+      <p>{{valor_total}}</p>
+
+      <h4>Observações</h4>
+      <p>{{observacao}}</p>
+    </section>
+
+    <section>
+      <p>Após inúmeras tentativas, trancos e barrancos, finalmente atingimos o nosso objetivo! Conquistamos com sucesso o nosso certificado "🐎Mestres do Go Horse🐎"! 🏆</p>
+
+      <p>Este certificado é o reconhecimento do nosso comprometimento em atingir os níveis extremos do desenvolvimento e da diversão.</p>
+
+      <p>Agradecemos sua avaliação e apoio ao longo do curso, nos incentivando alcançar essa conquista incrível.</p>
+
+      <p>Comemoramos essa vitória juntos, e agora nos sentimos verdadeiramente preparados para encarar, na cavalice,  qualquer desafio no mundo do desenvolvimento.</p>
+
+      <p>Obrigado por fazer parte da nossa jornada, Professor!</p>
+    </section>
+
+    <footer>
+      <p>
+        Atenciosamente,<br />
+        Equipe 09 "EGH - Extreme Go Horse" 🐎
+      </p>
+    </footer>
+  </body>
+</html>
