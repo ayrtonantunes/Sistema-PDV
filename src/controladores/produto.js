@@ -157,7 +157,7 @@ const excluirProduto = async (req, res) => {
 
     if (produtoVendido) {
       return res.status(400).json({
-        mensagem: 'Há pedidos em amdamento com este produto',
+        mensagem: 'Este produto não pode ser excluído pois está incluso em um pedido.',
       })
     }
 
