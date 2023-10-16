@@ -3,7 +3,9 @@ const validarCPF = (req, res, next) => {
   const stringCPF = cpf.toString().replace(/\D/g, '')
   const digitos = stringCPF.split('').map(Number)
 
-  if (!validarDigitosCpf(digitos)) {
+  const resultado = validarDigitosCpf(digitos)
+
+  if (!resultado) {
     return res.status(422).json('CPF inválido')
   }
 
@@ -22,18 +24,20 @@ function validarDigitosCpf(digitos) {
   const soma1 = digitos
     .slice(0, 9)
     .reduce((acc, digit, index) => acc + digit * (10 - index), 0)
-  const digito1 = (soma1 * 10) % 11
 
-  if (digito1 !== digitos[9]) {
+  const digito10 = soma1 % 11 < 2 ? 0 : 11 - (soma1 % 11)
+
+  if (digito10 !== digitos[9]) {
     return false
   }
 
   const soma2 = digitos
     .slice(0, 10)
     .reduce((acc, digit, index) => acc + digit * (11 - index), 0)
-  const digito2 = (soma2 * 10) % 11
 
-  if (digito2 !== digitos[10]) {
+  const digito11 = soma2 % 11 < 3 ? 0 : 11 - (soma2 % 11)
+
+  if (digito11 !== digitos[10]) {
     return false
   }
 

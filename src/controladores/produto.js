@@ -64,7 +64,7 @@ const cadastrarProduto = async (req, res) => {
 
     await editarDados(cadastroCompleto)
 
-    return res.status(201).json(cadastroCompleto)
+    return res.status(201).json({produto})
   } catch (error) {
     return res.status(500).json({ mensagem: 'Erro interno do Servidor' })
   }
